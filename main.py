@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 
 load_dotenv()
 
-# Headers pour l'authentification
+# Hepiaders pour l'authentification
 headers = {
     "Authorization": os.getenv('api_intercom'),
     "Accept": "application/json",
@@ -113,7 +113,7 @@ def get_company():
     from pymongo import MongoClient
 
     # Load the CSV file into a DataFrame
-    df = pd.read_csv("/Users/patrick/PycharmProjects/intercom/conversations_ratings.csv")
+    df = pd.read_csv(r"C:\Users\super\PycharmProjects\intercom\conversations_ratings.csv")
     df['created_at'] = pd.to_datetime(df['created_at'], unit='s')
 
     # Initialize an empty list to store company names
@@ -134,15 +134,28 @@ def get_company():
         company_names.append(company_name)
     # Add the company names to the DataFrame
     df["company_name"] = company_names
+    id_to_name = {
+        7456691: "Sarah",
+        5160845: "Karine",
+        7729712: "Eva",
+        5432315: "Luis",
+        7471429: "Gamze",
+        5302396: "Karima",
+        5615296: "Nourya",
+        6814357: "Sholane",
+        3746898: "Ruben",
+        3746897: "Nicole"
 
+    }
+    df["assigned_to"] = df["assigned_to"].replace(id_to_name)
     # Save the updated DataFrame to a new CSV file
-    df.to_csv("/Users/patrick/PycharmProjects/intercom/conversations_ratings_with_company.csv", index=False)
+    df.to_csv(r"C:\Users\super\PycharmProjects\intercom\conversations_ratings_with_company.csv", index=False)
 
     print("The DataFrame has been updated with company names and saved.")
 
 def merge():
-    df_old = pd.read_csv("/Users/patrick/PycharmProjects/intercom/base_22.csv")
-    df_new = pd.read_csv("/Users/patrick/PycharmProjects/intercom/conversations_ratings_with_company.csv")
+    df_old = pd.read_csv(r"C:\Users\super\PycharmProjects\intercom\base_22.csv")
+    df_new = pd.read_csv(r"C:\Users\super\PycharmProjects\intercom\conversations_ratings_with_company.csv")
 
     df_merged = df_new.set_index('created_at').combine_first(df_old.set_index('created_at')).reset_index()
     df_merged = df_merged.sort_values(by = 'created_at')
@@ -157,20 +170,9 @@ def merge():
     }
     df_merged["emoticone"] = df_merged["rating_score"].replace(rating_to_name)
 
-    id_to_name = {
-        "7456691": "Sarah",
-        "5160845": "Karine",
-        "7729712": "Eva",
-        "5432315": "Luis",
-        "7471429": "Gamze",
-        "5302396": "Karima",
-        "5615296": "Nourya",
-        "6814357": "Sholane",
-        "3746898": "Ruben"
-    }
-    df_merged["assigned_to"] = df_merged["assigned_to"].replace(id_to_name)
 
-    df_merged.to_csv("/Users/patrick/PycharmProjects/intercom/final_rating.csv", index=False)
+
+    df_merged.to_csv(r"C:\Users\super\PycharmProjects\intercom\final_rating.csv", index=False)
 
 def update_drive():
     try:
@@ -181,7 +183,7 @@ def update_drive():
 
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive']
         spreadsheet_id = '1ojx7fVnEDPUUCPtNYL_k0BixMfkP-Ex5XGMz7P9T1IE'
-        credentials_file_path = '/Users/patrick/PycharmProjects/resa_offline/creds/n8n-api-311609-115ae3a49fd9.json'
+        credentials_file_path = r'C:\Users\super\PycharmProjects\intercom\creds\n8n-api-311609-115ae3a49fd9.json'
 
         # Charger les informations d'identification
         with open(credentials_file_path, 'r') as file:
@@ -197,7 +199,7 @@ def update_drive():
         sheet = spreadsheet.worksheet("ratings")
 
         # Lire le fichier CSV et charger les données dans la feuille
-        csv_file = '/Users/patrick/PycharmProjects/intercom/final_rating.csv'
+        csv_file = r'C:\Users\super\PycharmProjects\intercom\final_rating.csv'
         data = pd.read_csv(csv_file)
         data = data.fillna('')  # Remplir les valeurs manquantes avec des chaînes vides
 
@@ -216,8 +218,8 @@ def update_drive():
         raise RuntimeError(f"Erreur dans update_drive: {e}")
 
 
-#
-# get_rating()
-# get_company()
+
+get_rating()
+get_company()
 merge()
 update_drive()
