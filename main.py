@@ -34,7 +34,7 @@ def get_rating():
     conversations_data = []
 
     # Timestamp pour la veille
-    timestamp_yesterday = int((datetime.now() - timedelta(days=1)).timestamp())
+    timestamp_yesterday = int((datetime.now() - timedelta(days=3)).timestamp())
     # timestamp_yesterday = int(datetime(2023, 1, 1).timestamp())
 
     # Requête de recherche pour obtenir les conversations mises à jour depuis hier avec une évaluation
